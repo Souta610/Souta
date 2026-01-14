@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>数あてゲーム</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      font-family: "Segoe UI", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+
+    .game-box {
+      background: rgba(0, 0, 0, 0.6);
+      border: 2px solid #00ffcc;
+      border-radius: 16px;
+      padding: 40px 30px;
+      width: 420px;
+      text-align: center;
+      box-shadow: 0 0 20px #00ffcc;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: 32px;
+      letter-spacing: 2px;
+      color: #00ffcc;
+      text-shadow: 0 0 8px #00ffcc;
+    }
+
+    p {
+      margin: 6px 0;
+    }
+
+    input {
+      width: 80%;
+      font-size: 18px;
+      padding: 10px;
+      margin-top: 15px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      text-align: center;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #00ffcc;
+      color: #003333;
+      transition: 0.2s;
+      box-shadow: 0 0 10px #00ffcc;
+    }
+
+    button:hover {
+      background: #00ccaa;
+      box-shadow: 0 0 20px #00ffcc;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 20px;
+      min-height: 28px;
+    }
+
+    #remain {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #cccccc;
+    }
+
+    .hp-bar {
+      margin-top: 15px;
+      width: 100%;
+      height: 14px;
+      background: #333;
+      border-radius: 7px;
+      overflow: hidden;
+      box-shadow: inset 0 0 5px #000;
+    }
+
+    .hp {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #00ffcc, #00ccaa);
+      transition: width 0.3s;
+    }
+  </style>
+</head>
+<body>
+
+<div class="game-box">
+  <h1>🎯 NUMBER GUESS</h1>
+  <p>1〜100の数字を当てろ</p>
+  <p>チャンスは <strong>5回</strong></p>
+
+  <input type="number" id="guess" placeholder="数字を入力">
+  <br>
+  <button onclick="checkNumber()">判定</button>
+  <button onclick="resetGame()">リセット</button>
+
+  <div id="result"></div>
+  <div id="remain"></div>
+
+  <!-- 残り回数ゲージ -->
+  <div class="hp-bar">
+    <div class="hp" id="hp"></div>
+  </div>
+</div>
+
+<script>
+  let answer = Math.floor(Math.random() * 100) + 1;
+  let count = 0;
+  const MAX_TRY = 5;
+
+  function checkNumber() {
+    const input = document.getElementById("guess");
+    const result = document.getElementById("result");
+    const remain = document.getElementById("remain");
+    const hp = document.getElementById("hp");
+
+    const guess = Number(input.value);
+
+    if (!guess || guess < 1 || guess > 100) {
+      result.textContent = "⚠ 1〜100の数字を入力せよ";
+      return;
+    }
+
+    count++;
+    const left = MAX_TRY - count;
+
+    if (guess < answer) {
+      result.textContent = "📈 もっと大きい！";
+    } else if (guess > answer) {
+      result.textContent = "📉 もっと小さい！";
+    } else {
+      result.textContent = `🎉 正解！ ${count}回でクリア！`;
+      remain.textContent = "";
+      hp.style.width = "0%";
+      return;
+    }
+
+    if (left > 0) {
+      remain.textContent = `残り ${left} 回`;
+      hp.style.width = (left / MAX_TRY) * 100 + "%";
+    } else {
+      result.textContent = `💀 GAME OVER… 正解は ${answer}`;
+      remain.textContent = "";
+      hp.style.width = "0%";
+    }
+  }
+
+  function resetGame() {
+    answer = Math.floor(Math.random() * 100) + 1;
+    count = 0;
+    document.getElementById("result").textContent = "";
+    document.getElementById("remain").textContent = "";
+    document.getElementById("guess").value = "";
+    document.getElementById("hp").style.width = "100%";
+  }
+</script>
+
+</body>
+</html>
